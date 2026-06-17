@@ -1,0 +1,12 @@
+root = "."
+tmp_dir = "build"
+
+[build]
+cmd = "go build -o ./build/SdalGIABot ./cmd/main.go"
+entrypoint = "./build/SdalGIABot"
+delay = 2000
+include_ext = ["go", "sql"]
+exclude_regex = ["_test\\.go"]
+
+[misc]
+clean_on_exit = true

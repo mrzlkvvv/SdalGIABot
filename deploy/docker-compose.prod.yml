@@ -1,0 +1,38 @@
+services:
+  bot:
+    container_name: sdalgia_bot
+    build:
+      context: ..
+      dockerfile: ./deploy/prod.Dockerfile
+    env_file:
+      - ../config/bot.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - net
+    restart: unless-stopped
+
+  postgres:
+    container_name: sdalgia_postgres
+    image: postgres:18-alpine
+    env_file:
+      - ../config/postgres.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  net:
+    driver: bridge
